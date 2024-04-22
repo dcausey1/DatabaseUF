@@ -1,5 +1,6 @@
 import {runApp} from '@/app/db/connect';
 import LineChart from "./components/LineChart";
+import { Header } from './components/Header';
 
 async function testDBConnection() {
     let connection;
@@ -31,6 +32,7 @@ export default async function Home() {
     const data = await testDBConnection();
     return (
         <div className="bg-white">
+            <Header />
             <div className="relative isolate pt-14">
                 <div className="py-24 sm:py-32 lg:pb-40">
                     <div className="mx-auto max-w-7xl px-6 lg:px-8">
