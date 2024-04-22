@@ -9,7 +9,7 @@ export default function BarChart() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await axios("https://dummyjson.com/users");
+      const response = await axios("/");
       if (response.status !== 200) {
         console.error("Bad response");
       }
@@ -30,8 +30,8 @@ export default function BarChart() {
 
       const context = chartRef.current.getContext("2d");
 
-      const label = chartData.map((items) => items.firstName);
-      const data = chartData.map((items) => items.weight);
+      const label = chartData.map((items) => items.year);
+      const data = chartData.map((items) => items.us_average);
 
       chartRef.current.chart = new Chart(context, {
         type: "bar",
@@ -106,7 +106,6 @@ export default function BarChart() {
         onClick={handleDownload}
         className="rounded-md bg-amber-600 bg-opacity-25 p-3 m-4 border border-amber-800"
       >
-        Download Chart
       </button>
     </div>
   );

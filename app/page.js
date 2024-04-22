@@ -1,7 +1,5 @@
-import { runApp } from '@/app/db/connect';
-import BarChart from "./components/BarChart";
-import oracledb from 'oracledb';
-import { ReactElement, JSXElementConstructor, ReactNode, ReactPortal, AwaitedReactNode, Key } from 'react';
+import {runApp} from '@/app/db/connect';
+import LineChart from "./components/LineChart";
 
 async function testDBConnection() {
     let connection;
@@ -10,9 +8,11 @@ async function testDBConnection() {
         console.log('Database connection successful');
 
         // Execute a simple query
-        const result = await connection?.execute('SELECT * FROM ngobrian.averagefares');
+        const result = await connection?.execute('SELECT year, us_average FROM ngobrian.averagefares');
         console.log(result?.rows); // log the result
-        return result?.rows;
+
+        // Transform the data into the expected format
+        return result?.rows.map(([year, us_average]) => ({year, us_average}));
 
     } catch (error) {
         console.error('Error getting database connection:', error);
@@ -46,7 +46,7 @@ export default async function Home() {
                             </div>
                             <div>
         <h3>Bar Chart</h3>
-        <BarChart data={data} />
+        <LineChart data={data} />
       </div>
                         </div>
                     </div>

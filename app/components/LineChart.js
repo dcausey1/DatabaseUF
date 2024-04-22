@@ -1,8 +1,9 @@
-"use client";
-import { useRef, useEffect } from "react";
-import { Chart } from "chart.js/auto";
+'use client'
 
-export default function LineChart() {
+import {useEffect, useRef} from "react";
+import {Chart} from "chart.js/auto";
+
+export default function LineChart({ data }) {
   const chartRef = useRef(null);
 
   useEffect(() => {
@@ -13,14 +14,18 @@ export default function LineChart() {
 
       const context = chartRef.current.getContext("2d");
 
-      const newChart = new Chart(context, {
+      // Extract labels and data from the prop
+      const labels = data.map(item => item.year);
+      const chartData = data.map(item => item.us_average);
+
+      chartRef.current.chart = new Chart(context, {
         type: "line",
         data: {
-          labels: [15, 37, 43, 47, 57, 76, 113],
+          labels: labels,
           datasets: [
             {
               label: "Info",
-              data: [34, 64, 23, 45, 67, 24, 64],
+              data: chartData,
               backgroundColor: ["rgb(255, 99, 132, 0.2)"],
               borderColor: ["rgb(255, 99, 132)"],
               borderWidth: 1,
@@ -28,7 +33,6 @@ export default function LineChart() {
           ],
         },
         options: {
-          // responsive: true
           scales: {
             x: {
               type: "linear",
@@ -39,13 +43,12 @@ export default function LineChart() {
           },
         },
       });
-
-      chartRef.current.chart = newChart;
     }
-  }, []);
+  }, [data]); // Add data as a dependency to the useEffect hook
+
   return (
-    <div style={{ position: "relative", width: "90vw", height: "80vh" }}>
-      <canvas ref={chartRef} />
-    </div>
+      <div style={{ position: "relative", width: "90vw", height: "80vh" }}>
+        <canvas ref={chartRef} />
+      </div>
   );
 }
