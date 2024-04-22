@@ -1,9 +1,10 @@
 import { AirlineDropdown } from '@/app/components/AirlineDropdown.js';
+import {Header} from '@/app/components/Header';
 export default function Home() {
 
     return (
         <div className="bg-white">
-
+        <Header />
             <div className="relative isolate pt-14">
                 <div className="py-24 sm:py-32 lg:pb-40">
                     <div className="mx-auto max-w-7xl px-6 lg:px-8">
