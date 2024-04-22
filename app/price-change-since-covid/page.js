@@ -1,4 +1,5 @@
-
+import {Header} from '@/app/components/Header';
+import Head from 'next/head';
 export function Search() {
     return (
         <div>
@@ -19,6 +20,7 @@ export function Search() {
 export default function Home() {
     return (
         <div className="bg-white">
+            <Header />
             <div className="relative isolate pt-14">
                 <div className="py-24 sm:py-32 lg:pb-40">
                     <div className="mx-auto max-w-7xl px-6 lg:px-8">
