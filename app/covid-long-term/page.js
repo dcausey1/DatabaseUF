@@ -1,4 +1,4 @@
-import { Header } from "@/app\components\Header.js";
+import { Header } from "@/app/components/Header.js";
 
 export function Search() {
     return (

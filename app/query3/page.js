@@ -1,4 +1,4 @@
-import { AirlineDropdown } from '@/app\components\AirlineDropdown.js';
+import { AirlineDropdown } from '@/app/components/AirlineDropdown.js';
 export default function Home() {
 
     return (
