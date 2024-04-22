@@ -1,6 +1,6 @@
 "use client";
-import { useRef, useEffect, useState } from "react";
-import { Chart } from "chart.js/auto";
+import {useEffect, useRef, useState} from "react";
+import {Chart} from "chart.js/auto";
 import axios from "axios";
 
 export default function BarChart() {
@@ -10,17 +10,17 @@ export default function BarChart() {
   useEffect(() => {
     const fetchData = async () => {
       const response = await axios("https://dummyjson.com/users");
-      if (response.status != 200) {
+      if (response.status !== 200) {
         console.error("Bad response");
       }
-      const data = response.data;
-      // console.log(data);
-      const firstSix = data.users.splice(0, 6);
+      const chartData = response.data;
+      console.log(chartData);
+      const firstSix = chartData.splice(0, 6);
       setChartData(firstSix);
     };
 
-    fetchData();
-  }, []);
+    setChartData(chartData);
+  }, [chartData]);
 
   useEffect(() => {
     if (chartRef.current) {
@@ -33,7 +33,7 @@ export default function BarChart() {
       const label = chartData.map((items) => items.firstName);
       const data = chartData.map((items) => items.weight);
 
-      const newChart = new Chart(context, {
+      chartRef.current.chart = new Chart(context, {
         type: "bar",
         data: {
           labels: label,
@@ -87,8 +87,6 @@ export default function BarChart() {
           },
         },
       });
-
-      chartRef.current.chart = newChart;
     }
   }, [chartData]);
 
