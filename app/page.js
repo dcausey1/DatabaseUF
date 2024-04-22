@@ -9,7 +9,26 @@ async function testDBConnection() {
         console.log('Database connection successful');
 
         // Execute a simple query
-        const result = await connection?.execute('SELECT year, us_average FROM ngobrian.averagefares');
+        const result = await connection?.execute(`SELECT to_date(to_char(Covid.Year, 'FM0000') || to_char(Covid.Month, 'FM00') || '01', 'YYYYMMDD') AS Time, Cases, SouthWestStocks, UnitedStocks, DeltaStocks  FROM
+        (SELECT EXTRACT(YEAR FROM YEAR_DATE) AS Year, EXTRACT(MONTH FROM YEAR_DATE) AS Month, MAX(Cases) AS Cases
+        From NGOBRIAN.Coviddata
+        GROUP BY EXTRACT(YEAR FROM YEAR_DATE), EXTRACT(MONTH FROM YEAR_DATE)
+        ORDER BY EXTRACT(YEAR FROM YEAR_DATE), EXTRACT(MONTH FROM YEAR_DATE)) Covid
+        JOIN
+        (SELECT EXTRACT(YEAR FROM Stocks.Year_Date) AS Year, EXTRACT(MONTH FROM Stocks.Year_Date)as Month, ROUND(AVG(SouthWestStocks), 2) AS SouthWestStocks, ROUND(AVG(UnitedStocks), 2) AS UnitedStocks, ROUND(AVG(DeltaStocks.Close),2) AS DeltaStocks
+        FROM
+        (SELECT SouthWestStocks.Year_date, SouthWestStocks.Close AS SouthWestStocks, UnitedStocks.Close AS UnitedStocks
+        FROM
+        NGOBRIAN.SouthWestStocks
+        JOIN
+        NGOBRIAN.UnitedStocks
+        ON SouthWestStocks.Year_date = UnitedStocks.Year_date) Stocks
+        JOIN
+        NGOBRIAN.DeltaStocks
+        ON Stocks.Year_date = DeltaStocks.Year_date
+        GROUP BY EXTRACT(YEAR FROM Stocks.Year_Date), EXTRACT(MONTH FROM Stocks.Year_Date)
+        ORDER BY EXTRACT(YEAR FROM Stocks.Year_Date), EXTRACT(MONTH FROM Stocks.Year_Date)) Stocks
+        ON Stocks.Year=Covid.Year and Stocks.Month = Covid.Month`);
         console.log(result?.rows); // log the result
 
         // Transform the data into the expected format

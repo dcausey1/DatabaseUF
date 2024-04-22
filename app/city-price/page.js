@@ -10,7 +10,7 @@ async function testDBConnection() {
         console.log('Database connection successful');
 
         // Execute a simple query
-        const result = await connection?.execute('SELECT COUNTY, CASES FROM ngobrian.coviddata');
+        const result = await connection?.execute('SELECT AVERAGE_FARE, PERCENTCHANGEOFFARE FROM ngobrian.averagefares');
         console.log(result?.rows); // log the result
 
         // Transform the data into the expected format
