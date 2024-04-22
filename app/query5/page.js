@@ -1,5 +1,33 @@
 import { Header } from "@/app/components/Header.js";
+import BarChart from "../components/BarChart";
+import LineChart from "../components/LineChart";
+import ScatterChart from "../components/ScatterChart";
 
+async function testDBConnection() {
+    let connection;
+    try {
+        connection = await runApp();
+        console.log('Database connection successful');
+
+        // Execute a simple query
+        const result = await connection?.execute('SELECT ORIGIN, ARR_DELAY FROM ngobrian.flights');
+        console.log(result?.rows); // log the result
+
+        // Transform the data into the expected format
+        return result?.rows.map(([year, us_average]) => ({year, us_average}));
+
+    } catch (error) {
+        console.error('Error getting database connection:', error);
+    } finally {
+        if (connection) {
+            try {
+                await connection.close();
+            } catch (err) {
+                console.error(err);
+            }
+        }
+    }
+}
 export function Search() {
     return (
         <div className="bg-white">
@@ -29,7 +57,8 @@ export function Search() {
     )
 }
 
-export default function Home() {
+export default async function Home() {
+    const data = await testDBConnection();
     return (
         <div className="bg-white">
             <Header/>
@@ -49,6 +78,7 @@ export default function Home() {
                                 Submit <span aria-hidden="true">→</span>
                             </button>
                         </div>
+                        <ScatterChart data={data} />
                         <div className="mt-16 flow-root sm:mt-24">
                             <div
                                 className="-m-2 rounded-xl bg-gray-900/5 p-2 ring-1 ring-inset ring-gray-900/10 md:-m-4 md:rounded-2xl lg:p-4">

@@ -1,5 +1,32 @@
 import { Header } from "@/app/components/Header.js";
+import LineChart from "../components/LineChart";
+import ScatterChart from "../components/ScatterChart";
 
+async function testDBConnection() {
+    let connection;
+    try {
+        connection = await runApp();
+        console.log('Database connection successful');
+
+        // Execute a simple query
+        const result = await connection?.execute('SELECT year, us_average FROM ngobrian.averagefares');
+        console.log(result?.rows); // log the result
+
+        // Transform the data into the expected format
+        return result?.rows.map(([year, us_average]) => ({year, us_average}));
+
+    } catch (error) {
+        console.error('Error getting database connection:', error);
+    } finally {
+        if (connection) {
+            try {
+                await connection.close();
+            } catch (err) {
+                console.error(err);
+            }
+        }
+    }
+}
 export function Search() {
     return (
         <div className="bg-white">
@@ -29,7 +56,8 @@ export function Search() {
     )
 }
 
-export default function Home() {
+export default async function Home() {
+    const data = await testDBConnection();
     return (
         <div className="bg-white">
             <Header/>
@@ -48,6 +76,7 @@ export default function Home() {
                                 className="rounded-md bg-gray-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-gray-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600">
                                 Submit <span aria-hidden="true">→</span>
                             </button>
+                            <ScatterChart data={data} />
                         </div>
                         <div className="mt-16 flow-root sm:mt-24">
                             <div
