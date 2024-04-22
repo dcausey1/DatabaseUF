@@ -10,7 +10,17 @@ async function testDBConnection() {
         console.log('Database connection successful');
 
         // Execute a simple query
-        const result = await connection?.execute('SELECT AVERAGE_FARE, PERCENTCHANGEOFFARE FROM ngobrian.averagefares');
+        const result = await connection?.execute(`SELECT A.Year, Average_Fare, Failures, ROUND((100* (Average_Fare - lag(Average_Fare) OVER (order by A.YEAR)- 1))/ lag(Average_Fare) OVER (order by A.YEAR), 2)  AS PercentChangeOfFare, ROUND((100* (Failures - lag(Failures) OVER (order by A.YEAR)- 1))/ lag(Failures) OVER (order by A.YEAR), 2)  AS PercentChangeOfFailures  FROM
+        (SELECT ROUND(AVG(US_AVERAGE),2) AS Average_Fare, YEAR FROM
+        NGOBRIAN.AverageFares
+        GROUP BY YEAR) A
+        JOIN
+        (SELECT COUNT(*) AS Failures, EXTRACT(YEAR FROM FL_DATE) AS Year
+        FROM NGOBRIAN.Flights
+        WHERE ARR_DELAY > 0 OR CANCELLED = 1
+        GROUP BY EXTRACT(YEAR FROM FL_DATE)) B
+        on A.YEAR = B.YEAR
+        ORDER BY YEAR ASC`);
         console.log(result?.rows); // log the result
 
         // Transform the data into the expected format
@@ -28,6 +38,7 @@ async function testDBConnection() {
         }
     }
 }
+
 export function Search() {
     return (
         <div className="bg-white">
